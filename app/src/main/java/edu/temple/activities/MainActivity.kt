@@ -1,5 +1,6 @@
 package edu.temple.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+const val MESSAGE_KEY = "message"
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,8 +25,12 @@ class MainActivity : AppCompatActivity() {
         with (findViewById<RecyclerView>(R.id.textSizeSelectorRecyclerView)) {
 
             // TODO Step 2: Implement lambda body to launch new activity and pass value
-            adapter = TextSizeAdapter(textSizes){
-                val launchActivity = Intent(this@MainActivity, DisplayActivity::class.java)
+            adapter = TextSizeAdapter(textSizes){ chosenSizes ->
+                val launchActivity = Intent(
+                    this@MainActivity,
+                    DisplayActivity::class.java
+                ) //Issue: Intent red, labeled "unresolved"
+                launchActivity.putExtra(MESSAGE_KEY, chosenSizes)
                 startActivity(launchActivity)
             }
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -37,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
 
 /* Convert to RecyclerView.Adapter */
+//FIXED: Private Val call back so the function can access?? the callback
 class TextSizeAdapter (private val textSizes: Array<Int>, private val callback: (Int)->Unit) : RecyclerView.Adapter<TextSizeAdapter.TextSizeViewHolder>() {
 
     // TODO Step 1: Complete onClickListener to return selected number
